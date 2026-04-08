@@ -1435,6 +1435,7 @@ func TestWorkspace_list_jsonOutput(t *testing.T) {
 				addrs.NewDefaultProvider("test"): providers.FactoryFixed(mock),
 			},
 		},
+		WorkingDir: workdir.NewDir("."),
 	}
 
 	// All commands run in this test should receive the -json flag
@@ -1445,7 +1446,7 @@ func TestWorkspace_list_jsonOutput(t *testing.T) {
 		Meta: meta,
 	}
 	if code := listCmd.Run(args); code != 0 {
-		t.Fatalf("bad: %d\n\n%s", code, done(t).Stderr())
+		t.Fatalf("bad: %d\n\nstderr: %s\n\nstdout: %s", code, done(t).Stderr(), done(t).Stdout())
 	}
 	output := done(t)
 	expectedStdOut := `{
@@ -1500,7 +1501,7 @@ func TestWorkspace_list_jsonOutput(t *testing.T) {
 		Meta: meta,
 	}
 	if code := listCmd.Run(args); code != 0 {
-		t.Fatalf("bad: %d\n\n%s", code, done(t).Stderr())
+		t.Fatalf("bad: %d\n\nstderr: %s\n\nstdout: %s", code, done(t).Stderr(), done(t).Stdout())
 	}
 	output = done(t)
 	expectedStdOut = `{

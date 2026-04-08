@@ -50,15 +50,8 @@ func (c *WorkspaceListCommand) Run(rawArgs []string) int {
 		envCommandShowWarning(c.Ui, c.LegacyName)
 	}
 
-	// Get the config path. Any unexpected CLI arguments have already been detected by arguments.ParseWorkspace, so we pass nil here.
-	configPath, err := ModulePath(nil)
-	if err != nil {
-		diags.Append(err)
-		view.List("", nil, diags)
-		return 1
-	}
-
 	// Load the backend
+	configPath := c.WorkingDir.RootModuleDir()
 	b, diags := c.backend(configPath, args.ViewType)
 	if diags.HasErrors() {
 		view.List("", nil, diags)
