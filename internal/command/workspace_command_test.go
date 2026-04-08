@@ -114,6 +114,7 @@ func TestWorkspace_allCommands_pluggableStateStore(t *testing.T) {
 	//// List Workspaces
 	ui = new(cli.MockUi)
 	meta.Ui = ui
+	meta.WorkingDir = workdir.NewDir(".")
 	listCmd := &WorkspaceListCommand{
 		Meta: meta,
 	}
@@ -387,11 +388,9 @@ func TestWorkspace_createAndList(t *testing.T) {
 	// create multiple workspaces
 	for _, env := range envs {
 		ui := new(cli.MockUi)
-		view, _ := testView(t)
 		newCmd := &WorkspaceNewCommand{
 			Meta: Meta{
 				Ui:         ui,
-				View:       view,
 				WorkingDir: workdir.NewDir("."),
 			},
 		}
@@ -402,12 +401,11 @@ func TestWorkspace_createAndList(t *testing.T) {
 
 	listCmd := &WorkspaceListCommand{}
 	ui := new(cli.MockUi)
-	view, _ := testView(t)
 	listCmd.Meta = Meta{
 		Ui:         ui,
-		View:       view,
 		WorkingDir: workdir.NewDir("."),
 	}
+
 	if code := listCmd.Run(nil); code != 0 {
 		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter)
 	}
@@ -529,10 +527,8 @@ func TestWorkspace_createInvalid(t *testing.T) {
 	// list workspaces to make sure none were created
 	listCmd := &WorkspaceListCommand{}
 	ui := new(cli.MockUi)
-	view, _ := testView(t)
 	listCmd.Meta = Meta{
 		Ui:         ui,
-		View:       view,
 		WorkingDir: workdir.NewDir("."),
 	}
 
@@ -879,7 +875,6 @@ func TestWorkspace_cannotDeleteDefaultWorkspace(t *testing.T) {
 	ui = cli.NewMockUi()
 	listCmd.Meta = Meta{
 		Ui:         ui,
-		View:       view,
 		WorkingDir: workdir.NewDir("."),
 	}
 
@@ -1041,11 +1036,9 @@ func TestWorkspace_envCommandDeprecationWarnings(t *testing.T) {
 
 	// Assert `terraform env list` returns expected deprecation warning
 	ui = new(cli.MockUi)
-	view, _ = testView(t)
 	listCmd := &WorkspaceListCommand{
 		Meta: Meta{
 			Ui:         ui,
-			View:       view,
 			WorkingDir: workdir.NewDir("."),
 		},
 		LegacyName: true,
