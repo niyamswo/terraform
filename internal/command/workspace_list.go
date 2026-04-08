@@ -50,7 +50,8 @@ func (c *WorkspaceListCommand) Run(rawArgs []string) int {
 		envCommandShowWarning(c.Ui, c.LegacyName)
 	}
 
-	configPath, err := ModulePath(rawArgs)
+	// Get the config path. Any unexpected CLI arguments have already been detected by arguments.ParseWorkspace, so we pass nil here.
+	configPath, err := ModulePath(nil)
 	if err != nil {
 		diags.Append(err)
 		view.List("", nil, diags)
