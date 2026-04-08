@@ -137,6 +137,9 @@ func (v *workspaceListHuman) List(selected string, list []string, diags tfdiags.
 			out.WriteString(s + "\n")
 		}
 		v.ui.Output(out.String())
+	} else {
+		// Warn that no states exist
+		v.meta.showDiagnostics(warnNoEnvsExistDiag(selected))
 	}
 }
 
