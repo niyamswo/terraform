@@ -27,7 +27,7 @@ permissions:
 jobs:
   get-product-version:
     name: "Determine intended Terraform version"
-    runs-on: ubuntu-latest
+    runs-on: s390x
     outputs:
       product-version: ${{ steps.get-product-version.outputs.product-version }}
       product-version-base: ${{ steps.get-product-version.outputs.base-product-version }}
@@ -61,7 +61,7 @@ jobs:
 
   get-go-version:
     name: "Determine Go toolchain version"
-    runs-on: ubuntu-latest
+    runs-on: s390x
     outputs:
       go-version: ${{ steps.get-go-version.outputs.version }}
 
@@ -73,7 +73,7 @@ jobs:
 
   generate-metadata-file:
     name: "Generate release metadata"
-    runs-on: ubuntu-latest
+    runs-on: s390x
     needs: get-product-version
     outputs:
       filepath: ${{ steps.generate-metadata-file.outputs.filepath }}
@@ -111,32 +111,33 @@ jobs:
     strategy:
       matrix:
         include:
-          - {goos: "freebsd", goarch: "386", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "freebsd", goarch: "amd64", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "freebsd", goarch: "arm", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "linux", goarch: "386", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "linux", goarch: "amd64", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "linux", goarch: "arm", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "linux", goarch: "arm64", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "openbsd", goarch: "386", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "openbsd", goarch: "amd64", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "solaris", goarch: "amd64", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "windows", goarch: "386", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "windows", goarch: "amd64", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "windows", goarch: "arm64", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "darwin", goarch: "amd64", runson: "ubuntu-latest", cgo-enabled: "0"}
-          - {goos: "darwin", goarch: "arm64", runson: "ubuntu-latest", cgo-enabled: "0"}
+          - {goos: "freebsd", goarch: "386", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "freebsd", goarch: "amd64", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "freebsd", goarch: "arm", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "linux", goarch: "386", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "linux", goarch: "amd64", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "linux", goarch: "arm", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "linux", goarch: "arm64", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "linux", goarch: "s390x", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "openbsd", goarch: "386", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "openbsd", goarch: "amd64", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "solaris", goarch: "amd64", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "windows", goarch: "386", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "windows", goarch: "amd64", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "windows", goarch: "arm64", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "darwin", goarch: "amd64", runson: "s390x", cgo-enabled: "0"}
+          - {goos: "darwin", goarch: "arm64", runson: "s390x", cgo-enabled: "0"}
       fail-fast: false
 
   package-docker:
     name: Build Docker image for linux_${{ matrix.arch }}
-    runs-on: ubuntu-latest
+    runs-on: s390x
     needs:
       - get-product-version
       - build
     strategy:
       matrix:
-        arch: ["amd64", "386", "arm", "arm64"]
+        arch: ["amd64", "386", "arm", "arm64", "s390x"]
       fail-fast: false
     env:
       repo: "terraform"
@@ -159,7 +160,7 @@ jobs:
 
   e2etest-build:
     name: Build e2etest for ${{ matrix.goos }}_${{ matrix.goarch }}
-    runs-on: ubuntu-latest
+    runs-on: s390x
     outputs:
       e2e-cache-key: ${{ steps.set-cache-values.outputs.e2e-cache-key }}
       e2e-cache-path: ${{ steps.set-cache-values.outputs.e2e-cache-path }}
@@ -177,6 +178,7 @@ jobs:
           - {goos: "linux", goarch: "amd64"}
           - {goos: "linux", goarch: "arm"}
           - {goos: "linux", goarch: "arm64"}
+          - {goos: "linux", goarch: "s390x"}
       fail-fast: false
 
     env:
@@ -225,10 +227,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - { runson: ubuntu-latest, goos: linux, goarch: "amd64" }
-          - { runson: ubuntu-latest, goos: linux, goarch: "386" }
-          - { runson: ubuntu-latest, goos: linux, goarch: "arm" }
-          - { runson: ubuntu-latest, goos: linux, goarch: "arm64" }
+          - { runson: s390x, goos: linux, goarch: "amd64" }
+          - { runson: s390x, goos: linux, goarch: "386" }
+          - { runson: s390x, goos: linux, goarch: "arm" }
+          - { runson: s390x, goos: linux, goarch: "arm64" }
+          - { runson: s390x, goos: linux, goarch: "s390x" }
           - { runson: macos-latest, goos: darwin, goarch: "amd64" }
           - { runson: windows-latest, goos: windows, goarch: "amd64" }
           - { runson: windows-latest, goos: windows, goarch: "386" }
@@ -290,7 +293,7 @@ jobs:
 
   e2e-test-exec:
     name: Run terraform-exec test for linux amd64
-    runs-on: ubuntu-latest
+    runs-on: s390x
     needs:
       - get-product-version
       - get-go-version

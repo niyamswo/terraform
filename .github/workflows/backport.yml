@@ -16,7 +16,7 @@ permissions:
 jobs:
   backport:
     if: github.event.pull_request
-    runs-on: ubuntu-latest
+    runs-on: s390x
     container: hashicorpdev/backport-assistant:0.5.8@sha256:b18bc289f405beb58aa22a1b4b3bdac42394fad602541ed94a0f9c5e3f66f954
     steps:
       - name: Run Backport Assistant

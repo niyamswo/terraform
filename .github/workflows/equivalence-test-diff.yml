@@ -15,7 +15,7 @@ permissions:
 jobs:
   equivalence-test-diff:
     name: "Equivalence Test Diff"
-    runs-on: ubuntu-latest
+    runs-on: s390x
 
     steps:
       - name: Fetch source code
