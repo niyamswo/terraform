@@ -38,7 +38,15 @@ jobs:
     name: Terraform ${{ inputs.goos }} ${{ inputs.goarch }} v${{ inputs.product-version }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+      - name: Install Go for s390x
+        if: ${{ inputs.goarch == 's390x' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y golang-go
+          go version
+      - name: Install Go for other architectures
+        if: ${{ inputs.goarch != 's390x' }}
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
         with:
           go-version: ${{ inputs.go-version }}
       - name: Build Terraform
