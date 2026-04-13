@@ -1,6 +1,6 @@
 name: build
 
-# If you want to test changes to this file before merging to a main branch
+# If you want to test changes to this file before merging to a main branch,
 # push them up to a branch whose name has the prefix "build-workflow-dev/",
 # which is a special prefix that triggers this workflow even though it's not
 # actually a release branch.
@@ -160,7 +160,7 @@ jobs:
 
   e2etest-build:
     name: Build e2etest for ${{ matrix.goos }}_${{ matrix.goarch }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runson }}
     outputs:
       e2e-cache-key: ${{ steps.set-cache-values.outputs.e2e-cache-key }}
       e2e-cache-path: ${{ steps.set-cache-values.outputs.e2e-cache-path }}
@@ -170,15 +170,15 @@ jobs:
     strategy:
       matrix:
         include:
-          - {goos: "darwin", goarch: "amd64"}
-          - {goos: "darwin", goarch: "arm64"}
-          - {goos: "windows", goarch: "amd64"}
-          - {goos: "windows", goarch: "386"}
-          - {goos: "linux", goarch: "386"}
-          - {goos: "linux", goarch: "amd64"}
-          - {goos: "linux", goarch: "arm"}
-          - {goos: "linux", goarch: "arm64"}
-          - {goos: "linux", goarch: "s390x"}
+          - {goos: "darwin", goarch: "amd64", runson: "ubuntu-latest"}
+          - {goos: "darwin", goarch: "arm64", runson: "ubuntu-latest"}
+          - {goos: "windows", goarch: "amd64", runson: "ubuntu-latest"}
+          - {goos: "windows", goarch: "386", runson: "ubuntu-latest"}
+          - {goos: "linux", goarch: "386", runson: "ubuntu-latest"}
+          - {goos: "linux", goarch: "amd64", runson: "ubuntu-latest"}
+          - {goos: "linux", goarch: "arm", runson: "ubuntu-latest"}
+          - {goos: "linux", goarch: "arm64", runson: "ubuntu-latest"}
+          - {goos: "linux", goarch: "s390x", runson: "s390x"}
       fail-fast: false
 
     env:
@@ -195,9 +195,19 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Install Go toolchain
+        if: ${{ matrix.goarch != 's390x' }}
         uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
         with:
           go-version: ${{ needs.get-go-version.outputs.go-version }}
+
+      - name: Install Go toolchain
+        if: ${{ matrix.goarch == 's390x' }}
+        run: |
+          wget https://go.dev/dl/go1.23.4.linux-s390x.tar.gz
+          sudo rm -rf /usr/local/go
+          sudo tar -C /usr/local -xzf go1.23.4.linux-s390x.tar.gz
+          echo "/usr/local/go/bin" >> $GITHUB_PATH
+          go version
 
       - name: Build test harness package
         env:
