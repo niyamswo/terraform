@@ -37,7 +37,7 @@ permissions:
 jobs:
   unit-tests:
     name: "Unit Tests"
-    runs-on: s390x
+    runs-on: ubuntu-latest
 
     steps:
       - name: "Fetch source code"
@@ -62,7 +62,7 @@ jobs:
 
   race-tests:
     name: "Race Tests"
-    runs-on: s390x
+    runs-on: ubuntu-latest
 
     steps:
       - name: "Fetch source code"
@@ -90,7 +90,7 @@ jobs:
     # tests across various other platforms in order to catch the rare exception
     # that might leak through this.
     name: "End-to-end Tests"
-    runs-on: s390x
+    runs-on: ubuntu-latest
 
     steps:
       - name: "Fetch source code"
@@ -112,7 +112,7 @@ jobs:
 
   consistency-checks:
     name: "Code Consistency Checks"
-    runs-on: s390x
+    runs-on: ubuntu-latest
 
     steps:
       - name: "Fetch source code"
