@@ -1,6 +1,6 @@
 name: build
 
-# If you want to test changes to this file before merging to a main branch,
+# If you want to test changes to this file before merging to a main branch
 # push them up to a branch whose name has the prefix "build-workflow-dev/",
 # which is a special prefix that triggers this workflow even though it's not
 # actually a release branch.
