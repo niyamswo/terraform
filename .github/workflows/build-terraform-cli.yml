@@ -53,6 +53,11 @@ jobs:
         uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
         with:
           go-version: ${{ inputs.go-version }}
+      - name: Install zip utility for s390x
+        if: ${{ inputs.goarch == 's390x' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip
       - name: Build Terraform for s390x
         if: ${{ inputs.goarch == 's390x' }}
         env:
