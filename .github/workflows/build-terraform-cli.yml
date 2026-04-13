@@ -45,6 +45,7 @@ jobs:
           sudo rm -rf /usr/local/go
           sudo tar -C /usr/local -xzf go1.23.4.linux-s390x.tar.gz
           echo "/usr/local/go/bin" >> $GITHUB_PATH
+          export PATH="/usr/local/go/bin:$PATH"
           go version
       - name: Install Go toolchain
         if: ${{ inputs.goarch != 's390x' }}
