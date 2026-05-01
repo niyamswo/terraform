@@ -25,7 +25,7 @@ jobs:
       compute-large: ${{ steps.setup-outputs.outputs.compute-large }}
       compute-xl: ${{ steps.setup-outputs.outputs.compute-xl }}
     steps:
-    - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
     - id: setup-outputs
       name: Setup outputs
       run: ./.github/scripts/get_runner_classes.sh
@@ -61,14 +61,14 @@ jobs:
             kv/data/github/${{ github.repository }}/dockerhub username | DOCKERHUB_USERNAME;
             kv/data/github/${{ github.repository }}/dockerhub token | DOCKERHUB_TOKEN;
 
-    - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     # NOTE: ENT specific step as we need to set elevated GitHub permissions.
     - name: Setup Git
       if: ${{ endsWith(github.repository, '-enterprise') }}
       run: git config --global url."https://${{ secrets.ELEVATED_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
 
-    - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5.0.0
+    - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
       with:
         go-version: ${{ needs.get-go-version.outputs.go-version }}
     
@@ -83,17 +83,17 @@ jobs:
         echo "GITHUB_BUILD_URL=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3.3.0
+      uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
     # NOTE: conditional specific logic as we store secrets in Vault in ENT and use GHA secrets in CE.
     - name: Login to Docker Hub
-      uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+      uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
       with:
         username: ${{ endsWith(github.repository, '-enterprise') && steps.secrets.outputs.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
         password: ${{ endsWith(github.repository, '-enterprise') && steps.secrets.outputs.DOCKERHUB_TOKEN || secrets.DOCKERHUB_TOKEN }}
 
     - name: Docker build and push
-      uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0 # v5.3.0
+      uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
       with:
         context: ./bin
         file: ./build-support/docker/Consul-Dev.dockerfile
